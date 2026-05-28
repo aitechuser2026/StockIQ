@@ -139,13 +139,14 @@ export default function Auth() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 flex items-center justify-center p-4"
+      style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
       <div className="w-full max-w-md">
 
         {/* Brand */}
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-3">📈</div>
-          <h1 className="text-3xl font-black text-white tracking-tight">StockIQ</h1>
+        <div className="text-center mb-6 md:mb-8">
+          <div className="text-4xl md:text-5xl mb-2 md:mb-3">📈</div>
+          <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">StockIQ</h1>
           <p className="text-slate-400 text-sm mt-1">Your personal stock analysis dashboard</p>
         </div>
 
@@ -169,7 +170,7 @@ export default function Auth() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-5 md:p-8">
 
           {/* Tab switcher */}
           {mode !== 'reset' && (

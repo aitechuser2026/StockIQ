@@ -8,5 +8,30 @@
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
+    /* Prevent horizontal overflow on mobile */
+    overflow-x: hidden;
   }
+
+  /* Better tap targets on mobile */
+  button, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Smooth scrolling for all scrollable containers */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide scrollbar on horizontally scrolling control bars */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Mobile: prevent body scroll when a modal/drawer is open */
+  body.overflow-hidden { overflow: hidden; }
+}
+
+@layer utilities {
+  /* Full bleed on mobile (remove horizontal padding) */
+  .mobile-full { @apply -mx-3 md:mx-0; }
 }

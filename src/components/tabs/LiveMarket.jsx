@@ -265,7 +265,7 @@ function MarketSentiment({ sectors, indices }) {
         </div>
         <div className="text-center text-xs text-slate-400 mt-1">{bullPct}% sectors advancing</div>
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-3 gap-2">
         {stats.map(s => (
           <div key={s.label} className="bg-slate-50 rounded-lg p-2">
             <div className="text-xs text-slate-400 mb-0.5 leading-tight">{s.label}</div>

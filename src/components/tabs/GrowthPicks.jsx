@@ -186,53 +186,54 @@ export default function GrowthPicks() {
   const fmtUp    = (n) => n != null ? `${n >= 0 ? '+' : ''}${n.toFixed(1)}%` : '—'
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
 
       {/* ── Header ── */}
-      <div className="bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">🚀 Growth & Momentum Picks</h1>
-            <p className="text-violet-200 text-sm mt-1">
-              AI-era leaders · Live prices · Analyst targets · May 2026
-            </p>
+      <div className="bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-700 rounded-2xl p-4 md:p-6 text-white shadow-lg">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h1 className="text-lg md:text-2xl font-bold flex items-center gap-2">🚀 Growth & Momentum</h1>
+              <p className="text-violet-200 text-xs md:text-sm mt-0.5">
+                AI-era leaders · Live prices · Analyst targets · May 2026
+              </p>
+            </div>
+            {/* Live badge + refresh */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold ${
+                loading ? 'bg-white/20 text-white/70' :
+                error   ? 'bg-red-400/60 text-white'  :
+                          'bg-green-400/30 text-green-100 border border-green-400/50'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${loading ? 'bg-white/50 animate-pulse' : error ? 'bg-red-300' : 'bg-green-300 animate-pulse'}`} />
+                {loading ? 'Loading…' : error ? 'Cached' : 'Live'}
+              </div>
+              <button onClick={refresh} disabled={loading}
+                className="px-2 py-1 rounded-full text-xs font-semibold bg-white/20 hover:bg-white/30 text-white transition-all disabled:opacity-50">
+                ⟳
+              </button>
+            </div>
           </div>
 
-          {/* Live status + controls */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Live badge */}
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
-              loading ? 'bg-white/20 text-white/70' :
-              error   ? 'bg-red-400/60 text-white'  :
-                        'bg-green-400/30 text-green-100 border border-green-400/50'
-            }`}>
-              <span className={`w-2 h-2 rounded-full ${loading ? 'bg-white/50 animate-pulse' : error ? 'bg-red-300' : 'bg-green-300 animate-pulse'}`} />
-              {loading ? 'Fetching…' : error ? 'Using fallback' : 'Live prices'}
-            </div>
-
-            {lastUpdated && !loading && (
-              <span className="text-xs text-violet-300">
-                Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            )}
-
-            <button onClick={refresh} disabled={loading}
-              className="px-3 py-1.5 rounded-full text-sm font-semibold bg-white/20 hover:bg-white/30 text-white transition-all disabled:opacity-50">
-              {loading ? '⟳ Loading…' : '⟳ Refresh'}
-            </button>
-
+          {/* Controls row — scrollable on mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: 'none' }}>
             <select value={sortBy} onChange={e => setSortBy(e.target.value)}
-              className="bg-white/20 text-white border border-white/30 rounded-lg px-3 py-1.5 text-sm">
-              <option value="upside">Sort: Upside %</option>
-              <option value="revenueGrowth">Sort: Rev Growth</option>
-              <option value="change">Sort: Today %</option>
+              className="bg-white/20 text-white border border-white/30 rounded-lg px-2 py-1.5 text-xs flex-shrink-0">
+              <option value="upside">↑ Upside %</option>
+              <option value="revenueGrowth">↑ Rev Growth</option>
+              <option value="change">↑ Today %</option>
             </select>
             <select value={riskFilter} onChange={e => setRisk(e.target.value)}
-              className="bg-white/20 text-white border border-white/30 rounded-lg px-3 py-1.5 text-sm">
+              className="bg-white/20 text-white border border-white/30 rounded-lg px-2 py-1.5 text-xs flex-shrink-0">
               <option value="All">All Risk</option>
               <option value="Moderate">Moderate</option>
               <option value="Aggressive">Aggressive</option>
             </select>
+            {lastUpdated && !loading && (
+              <span className="text-[10px] text-violet-300 whitespace-nowrap flex-shrink-0">
+                {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
           </div>
         </div>
       </div>

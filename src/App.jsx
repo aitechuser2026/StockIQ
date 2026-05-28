@@ -146,7 +146,7 @@ function Dashboard({ user, onLogout }) {
         <Sidebar active={activeTab} onChange={setActiveTab} />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="p-4 md:p-6 max-w-[1300px] mx-auto">
+          <div className="p-3 md:p-6 max-w-[1300px] mx-auto pb-24 md:pb-6">
             {activeTab === 'calendar'     && <CalendarPage />}
             {activeTab === 'overview'     && <LiveMarket />}
             {activeTab === 'options'      && <OptionsFlow />}
@@ -178,7 +178,7 @@ function Dashboard({ user, onLogout }) {
             {activeTab === 'analyzer'     && <StockAnalyzer />}
           </div>
 
-          <footer className="text-center py-4 text-xs text-slate-400 border-t border-slate-200 bg-white mt-4">
+          <footer className="text-center py-4 text-xs text-slate-400 border-t border-slate-200 bg-white mt-4 mb-16 md:mb-0">
             StockIQ · {user.email} · Data: Yahoo Finance · May 2026
           </footer>
         </main>
