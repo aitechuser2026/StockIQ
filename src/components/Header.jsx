@@ -1,105 +1,99 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-export default function Header({ dataSource, countdown, onRefreshChange, user, onLogout, isSyncing }) {
-  const [inputVal,    setInputVal]    = useState('')
-  const [showMenu,    setShowMenu]    = useState(false)
+function useETClock() {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(t)
+  }, [])
+  return now
+}
 
-  const handleKey = (e) => {
-    if (e.key === 'Enter') {
-      const val = inputVal.trim()
-      const match = val.match(/^(\d+\.?\d*)\s*(s|sec|m|min|mins|minutes?)?$/i)
-      if (match) {
-        const num  = parseFloat(match[1])
-        const unit = (match[2] || 'min').toLowerCase()
-        const secs = unit.startsWith('s') ? num : num * 60
-        if (secs >= 10) onRefreshChange(Math.round(secs))
-      }
-    }
-  }
+export default function Header({ user, onLogout, isSyncing }) {
+  const [showMenu, setShowMenu] = useState(false)
+  const now = useETClock()
 
-  const mins     = Math.floor(countdown / 60)
-  const secs     = countdown % 60
-  const countStr = `${mins}:${String(secs).padStart(2, '0')}`
+  const timeStr = now.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'America/New_York'
+  })
+  const isMarketOpen = (() => {
+    const h   = parseInt(now.toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: 'America/New_York' }))
+    const m   = parseInt(now.toLocaleString('en-US', { minute: 'numeric', timeZone: 'America/New_York' }))
+    const day = now.toLocaleString('en-US', { weekday: 'short', timeZone: 'America/New_York' })
+    const mins = h * 60 + m
+    return !['Sat','Sun'].includes(day) && mins >= 570 && mins < 960 // 9:30–4:00 ET
+  })()
 
   return (
     <header
-      style={{ background: 'linear-gradient(135deg,#0f1629 0%,#1a2744 60%,#0f1629 100%)', borderBottom: '2px solid #2d4a8a' }}
-      className="text-white px-4 md:px-6 py-2 md:py-3 flex justify-between items-center gap-2 relative z-30">
+      style={{ background: 'linear-gradient(135deg,#0a0f1e 0%,#111827 50%,#0a0f1e 100%)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+      className="text-white px-4 md:px-6 py-3 flex justify-between items-center gap-3 relative z-30">
 
-      {/* ── Left: brand ──────────────────────────────────────────────── */}
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="min-w-0">
-          <h1 className="text-base md:text-xl font-bold leading-tight whitespace-nowrap">
-            📈 <span className="text-blue-400">StockIQ</span>
-          </h1>
-          <p className="text-[10px] md:text-xs text-slate-400 hidden sm:block">US Markets · Real-Time · May 2026</p>
+      {/* ── Left: brand ── */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">📈</span>
+          <div>
+            <div className="text-base font-black tracking-tight leading-none">
+              Stock<span className="text-blue-400">IQ</span>
+            </div>
+            <div className="text-[10px] text-slate-500 leading-none mt-0.5 hidden sm:block">
+              US Markets · Auto-refresh 1 min
+            </div>
+          </div>
         </div>
+
+        {/* Market status pill */}
+        <div className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${
+          isMarketOpen
+            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+            : 'bg-slate-700/40 border-slate-600/30 text-slate-500'
+        }`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${isMarketOpen ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+          {isMarketOpen ? 'Market Open' : 'Market Closed'}
+        </div>
+
         {isSyncing && (
-          <span className="hidden sm:inline text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded border border-blue-500/30 animate-pulse whitespace-nowrap">
+          <span className="hidden md:inline text-[10px] bg-blue-500/15 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 animate-pulse">
             Syncing…
           </span>
         )}
       </div>
 
-      {/* ── Right: controls ───────────────────────────────────────────── */}
-      <div className="flex items-center gap-1.5 md:gap-3">
+      {/* ── Right: ET clock + avatar ── */}
+      <div className="flex items-center gap-3">
 
-        {/* Live/Cache badge — always visible */}
-        {dataSource === 'live' ? (
-          <span className="text-[10px] md:text-xs font-semibold px-2 py-0.5 md:py-1 rounded-full bg-green-100 text-green-800 whitespace-nowrap">✅ Live</span>
-        ) : (
-          <span className="text-[10px] md:text-xs font-semibold px-2 py-0.5 md:py-1 rounded-full bg-yellow-100 text-yellow-800 whitespace-nowrap">⚠️ Cache</span>
-        )}
-
-        {/* Countdown — always visible */}
-        <div className="text-center bg-white/10 border border-white/20 rounded-lg px-2 md:px-3 py-1 min-w-[48px]">
-          <div className="text-[9px] md:text-[10px] text-slate-400 uppercase tracking-wide leading-none">Next</div>
-          <div className="text-xs md:text-sm font-bold text-green-400 tabular-nums">{countStr}</div>
+        {/* ET clock */}
+        <div className="text-right hidden sm:block">
+          <div className="text-sm font-bold tabular-nums text-white">{timeStr} <span className="text-slate-500 text-[10px]">ET</span></div>
+          <div className="text-[10px] text-slate-500 leading-none">
+            {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York' })}
+          </div>
         </div>
 
-        {/* Refresh input — hidden on mobile */}
-        <div className="hidden md:block text-center bg-white/10 border border-white/20 rounded-lg px-3 py-1">
-          <div className="text-[10px] text-slate-400 uppercase tracking-wide">Refresh</div>
-          <input
-            value={inputVal}
-            onChange={e => setInputVal(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder="5m"
-            className="bg-white/10 border border-white/20 rounded text-white text-xs font-semibold w-12 text-center py-0.5 outline-none focus:border-blue-400 mt-0.5"
-          />
-        </div>
+        {/* Divider */}
+        <div className="w-px h-7 bg-white/10 hidden sm:block" />
 
-        {/* User avatar + dropdown */}
+        {/* Avatar + dropdown */}
         <div className="relative">
           <button
             onClick={() => setShowMenu(m => !m)}
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg border border-white/20 flex-shrink-0">
+            className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-black text-sm shadow-lg border border-white/20 flex-shrink-0 hover:scale-105 transition-transform">
             {user.email[0].toUpperCase()}
           </button>
 
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-10 z-50 bg-white rounded-xl shadow-2xl border border-slate-100 py-2 w-52 text-sm">
-                <div className="px-4 py-2 border-b border-slate-100">
-                  <div className="font-semibold text-slate-800 truncate">{user.email}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">StockIQ account</div>
-                </div>
-                {/* Refresh control in menu on mobile */}
-                <div className="md:hidden px-4 py-2 border-b border-slate-100">
-                  <div className="text-xs text-slate-500 mb-1">Refresh interval</div>
-                  <input
-                    value={inputVal}
-                    onChange={e => setInputVal(e.target.value)}
-                    onKeyDown={e => { handleKey(e); if (e.key === 'Enter') setShowMenu(false) }}
-                    placeholder="e.g. 5m or 30s"
-                    className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
+              <div className="absolute right-0 top-10 z-50 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden w-56">
+                <div className="px-4 py-3 bg-slate-50 border-b border-slate-100">
+                  <div className="font-bold text-slate-800 text-sm truncate">{user.email}</div>
+                  <div className="text-[11px] text-slate-400 mt-0.5">StockIQ · Auto-refresh every 60s</div>
                 </div>
                 <button
                   onClick={() => { onLogout(); setShowMenu(false) }}
-                  className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors font-medium">
-                  Sign Out
+                  className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition-colors text-sm font-semibold flex items-center gap-2">
+                  <span>→</span> Sign Out
                 </button>
               </div>
             </>

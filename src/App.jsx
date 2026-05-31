@@ -49,7 +49,7 @@ function SetupScreen() {
 // ── Full dashboard (shown when logged in) ─────────────────────────────────────
 function Dashboard({ user, onLogout }) {
   const [activeTab,         setActiveTab]         = useState('calendar')
-  const [refreshSecs,       setRefreshSecs]       = useState(300)
+  const [refreshSecs,       setRefreshSecs]       = useState(60)   // auto every 60s, not user-controlled
   const [watchedTickers,    setWatchedTickers]    = useState([])
   const [portfolios,        setPortfolios]        = useState(DEFAULT_PORTFOLIOS)
   const [activePortfolioId, setActivePortfolioId] = useState(DEFAULT_PORTFOLIO_ID)
@@ -83,7 +83,6 @@ function Dashboard({ user, onLogout }) {
           if (s.activePortfolioId) setActivePortfolioId(s.activePortfolioId)
         }
         if (s?.watchedTickers?.length) setWatchedTickers(s.watchedTickers)
-        if (s?.refreshSecs)            setRefreshSecs(s.refreshSecs)
         if (s?.activeTab)              setActiveTab(s.activeTab)
       } finally {
         hasLoaded.current = true
@@ -95,7 +94,7 @@ function Dashboard({ user, onLogout }) {
   // ── Save: localStorage immediately, Supabase debounced ─────────────────────
   useEffect(() => {
     if (!hasLoaded.current) return
-    const data = { portfolios, activePortfolioId, watchedTickers, refreshSecs, activeTab }
+    const data = { portfolios, activePortfolioId, watchedTickers, activeTab }
     saveLocalNow(data)
     if (fsTimer.current) clearTimeout(fsTimer.current)
     fsTimer.current = setTimeout(async () => {
@@ -134,9 +133,6 @@ function Dashboard({ user, onLogout }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-100">
       <Header
-        dataSource={dataSource}
-        countdown={countdown}
-        onRefreshChange={setRefreshSecs}
         user={{ email: user.email }}
         onLogout={onLogout}
         isSyncing={isSyncing}

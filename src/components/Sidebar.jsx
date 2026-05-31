@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 
+// ── Phase 1: Calendar only. Uncomment others as pages are tuned. ──────────────
 const NAV_ITEMS = [
-  { id: 'calendar',     icon: '🗓️',  label: 'Calendar',        sub: 'Events · May–Jun 2026' },
-  { id: 'macro',        icon: '🌐',  label: 'Macro',           sub: 'Fed · Yields · Regime' },
-  { id: 'overview',     icon: '📊',  label: 'Live Market',     sub: 'Indices · Sectors · F&G' },
-  { id: 'sectors',      icon: '🔄',  label: 'Sectors',         sub: 'Leading vs Lagging' },
-  { id: 'growth',       icon: '🚀',  label: 'Growth',          sub: 'AI · Tech · Momentum' },
-  { id: 'value',        icon: '💎',  label: 'Value',           sub: 'Undervalued · Dividend' },
-  { id: 'optionsplays', icon: '🎯',  label: 'Options Plays',   sub: '1–3 week setups' },
-  { id: 'earnings',     icon: '📣',  label: 'Earnings',        sub: 'Jun 2026 movers' },
-  { id: 'seasonality',  icon: '📅',  label: 'Seasonality',     sub: 'Monthly dip analysis' },
-  { id: 'options',      icon: '🎰',  label: 'Options Flow',    sub: 'Trending · 2-week plays' },
-  { id: 'summary',      icon: '📋',  label: 'Options Picks',   sub: 'Safe premium picks' },
-  { id: 'portfolio',    icon: '💼',  label: 'Portfolio',       sub: 'Track & Optimize' },
-  { id: 'signals',      icon: '📡',  label: 'Signals',         sub: 'Red · Orange · Green' },
-  { id: 'analyzer',     icon: '🔍',  label: 'Analyzer',        sub: 'Deep dive any ticker' },
+  { id: 'calendar',     icon: '🗓️',  label: 'Calendar',        sub: 'Events · Alerts · Countdown' },
+  // { id: 'macro',        icon: '🌐',  label: 'Macro',           sub: 'Fed · Yields · Regime' },
+  // { id: 'overview',     icon: '📊',  label: 'Live Market',     sub: 'Indices · Sectors · F&G' },
+  // { id: 'sectors',      icon: '🔄',  label: 'Sectors',         sub: 'Leading vs Lagging' },
+  // { id: 'growth',       icon: '🚀',  label: 'Growth',          sub: 'AI · Tech · Momentum' },
+  // { id: 'value',        icon: '💎',  label: 'Value',           sub: 'Undervalued · Dividend' },
+  // { id: 'optionsplays', icon: '🎯',  label: 'Options Plays',   sub: '1–3 week setups' },
+  // { id: 'earnings',     icon: '📣',  label: 'Earnings',        sub: 'Jun 2026 movers' },
+  // { id: 'seasonality',  icon: '📅',  label: 'Seasonality',     sub: 'Monthly dip analysis' },
+  // { id: 'options',      icon: '🎰',  label: 'Options Flow',    sub: 'Trending · 2-week plays' },
+  // { id: 'summary',      icon: '📋',  label: 'Options Picks',   sub: 'Safe premium picks' },
+  // { id: 'portfolio',    icon: '💼',  label: 'Portfolio',       sub: 'Track & Optimize' },
+  // { id: 'signals',      icon: '📡',  label: 'Signals',         sub: 'Red · Orange · Green' },
+  // { id: 'analyzer',     icon: '🔍',  label: 'Analyzer',        sub: 'Deep dive any ticker' },
 ]
 
 const SECTION_LABELS = {
@@ -47,8 +48,8 @@ export default function Sidebar({ active, onChange }) {
   const [collapsed,   setCollapsed]   = useState(false)
   const [drawerOpen,  setDrawerOpen]  = useState(false)
 
-  // Pinned tabs shown in the bottom bar (most commonly used)
-  const PINNED = ['overview', 'growth', 'value', 'optionsplays', 'portfolio']
+  // Pinned tabs shown in the bottom bar (only active pages)
+  const PINNED = ['calendar']
   // "More" drawer shows the rest
 
   return (
