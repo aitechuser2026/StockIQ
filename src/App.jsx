@@ -6,6 +6,7 @@ import Sidebar          from './components/Sidebar'
 import Auth             from './components/Auth'
 
 import CalendarPage     from './components/tabs/CalendarPage'
+import StockDeepDive   from './components/tabs/StockDeepDive'
 import LiveMarket       from './components/tabs/LiveMarket'
 import OptionsFlow      from './components/tabs/OptionsFlow'
 import Summary          from './components/tabs/Summary'
@@ -144,6 +145,7 @@ function Dashboard({ user, onLogout }) {
         <main className="flex-1 overflow-y-auto">
           <div className="p-3 md:p-6 max-w-[1300px] mx-auto pb-24 md:pb-6">
             {activeTab === 'calendar'     && <CalendarPage />}
+            {activeTab === 'deepdive'     && <StockDeepDive />}
             {activeTab === 'overview'     && <LiveMarket />}
             {activeTab === 'options'      && <OptionsFlow />}
             {activeTab === 'summary'      && <Summary {...stockProps} />}

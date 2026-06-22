@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 // ── Phase 1: Calendar only. Uncomment others as pages are tuned. ──────────────
 const NAV_ITEMS = [
   { id: 'calendar',     icon: '🗓️',  label: 'Calendar',        sub: 'Events · Alerts · Countdown' },
+  { id: 'deepdive',     icon: '🔬',  label: 'Deep Dive',       sub: 'Revenue · Profit · Moat' },
   // { id: 'macro',        icon: '🌐',  label: 'Macro',           sub: 'Fed · Yields · Regime' },
   // { id: 'overview',     icon: '📊',  label: 'Live Market',     sub: 'Indices · Sectors · F&G' },
   // { id: 'sectors',      icon: '🔄',  label: 'Sectors',         sub: 'Leading vs Lagging' },
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
 
 const SECTION_LABELS = {
   calendar:     'Market',
+  deepdive:     'Analysis',
   macro:        'Market',
   overview:     'Market',
   sectors:      'Research',
@@ -37,7 +39,7 @@ const SECTION_LABELS = {
 
 // Compact label for bottom bar (max ~7 chars)
 const BOTTOM_LABEL = {
-  calendar: 'Calendar', macro: 'Macro', overview: 'Market',
+  calendar: 'Calendar', deepdive: 'DeepDive', macro: 'Macro', overview: 'Market',
   sectors: 'Sectors', growth: 'Growth', value: 'Value',
   optionsplays: 'Options', earnings: 'Earnings', seasonality: 'Season',
   options: 'Flow', summary: 'Picks', portfolio: 'Portfolio',
@@ -49,7 +51,7 @@ export default function Sidebar({ active, onChange }) {
   const [drawerOpen,  setDrawerOpen]  = useState(false)
 
   // Pinned tabs shown in the bottom bar (only active pages)
-  const PINNED = ['calendar']
+  const PINNED = ['calendar', 'deepdive']
   // "More" drawer shows the rest
 
   return (
